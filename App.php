@@ -87,5 +87,11 @@ class App
         return $title;
     }
 
+    protected function __clone() { }
+
+    public function __wakeup()
+    {
+        throw new \Exception("Cannot unserialize a singleton.");
+    }
 
 }
