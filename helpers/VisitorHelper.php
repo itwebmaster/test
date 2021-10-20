@@ -32,7 +32,7 @@ class VisitorHelper
 
     public static function getVisitor($visitor_info){
         $sql = 'SELECT id FROM `visitors` WHERE ip_address = :ip_address AND user_agent = :user_agent AND page_url = :page_url';
-        $prepared = App::$instance->db->prepare($sql);
+        $prepared = App::site()->db->prepare($sql);
         $prepared->execute($visitor_info);
         if($prepared->rowCount()){
             return $prepared->fetch();

@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  *
  * @property string siteName
@@ -10,7 +9,7 @@
  */
 class App
 {
-    public static $instance;
+    private static $instance;
 
     /**
      * @var mixed
@@ -26,8 +25,16 @@ class App
     public function __construct()
     {
         $this->config = require_once BASE_PATH . '/config/main.php';
+        $this->dbConnect();
+    }
 
-        $this->db =  new PDO('mysql:host='.$this->config['db']['host'].';dbname='.$this->config['db']['dbname'].';port='.$this->config['db']['port'], $this->config['db']['user'],
+    private function dbConnect()
+    {
+        $connect = str_replace([':hostname', ':dbname', ':port'],
+            [$this->config['db']['host'], $this->config['db']['dbname'], $this->config['db']['port']],
+            'mysql:host=:hostname;dbname=:dbname;port=:port'
+        );
+        $this->db = new PDO($connect, $this->config['db']['user'],
             $this->config['db']['password']);
     }
 
@@ -70,8 +77,10 @@ class App
     public function getTitle()
     {
         $title = $this->siteName;
-        if(!empty($this->config['pages'][$_SERVER['SCRIPT_NAME']])){
-             $title .= ' - '. $this->config['pages'][$_SERVER['SCRIPT_NAME']];
+        if (!empty($this->config['pages'][$_SERVER['SCRIPT_NAME']])) {
+            $title .= ' - ' . $this->config['pages'][$_SERVER['SCRIPT_NAME']];
+        } else {
+            $title .= ' - ' .substr($_SERVER['SCRIPT_NAME'], 1);
         }
 
 
